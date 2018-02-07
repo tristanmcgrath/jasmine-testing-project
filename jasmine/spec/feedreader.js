@@ -31,30 +31,68 @@ $(function() {
          * in the allFeeds object and ensures it has a URL defined
          * and that the URL is not empty.
          */
+        it('contain valid URL\'s', function() {
+            for (i=0; i<allFeeds.length; i++) {
+              expect(allFeeds[i].url).toBeDefined();
+              expect(allFeeds[i].url).not.toBe('');
+            }
+        });
 
 
         /* TODO: Write a test that loops through each feed
          * in the allFeeds object and ensures it has a name defined
          * and that the name is not empty.
          */
+        it('contain valid names', function() {
+            for (i=0; i<allFeeds.length; i++) {
+              expect(allFeeds[i].name).toBeDefined();
+              expect(allFeeds[i].name).not.toBe('');
+            }
+        });
     });
 
 
-    /* TODO: Write a new test suite named "The menu" */
+    /* TODO: Write a new test suite named "The Menu" */
+    describe('The Menu', function() {
 
         /* TODO: Write a test that ensures the menu element is
          * hidden by default. You'll have to analyze the HTML and
          * the CSS to determine how we're performing the
          * hiding/showing of the menu element.
          */
+         it('is hidden by default', function() {
+              var body = document.querySelector('body');
+              expect(body.classList.contains('menu-hidden')).toBe(true); /*test to see if body has menu-hidden class*/
+         });
 
          /* TODO: Write a test that ensures the menu changes
           * visibility when the menu icon is clicked. This test
           * should have two expectations: does the menu display when
           * clicked and does it hide when clicked again.
           */
+          it('appears/disappears on hamburger click', function() {
+              var simulateClick = function (elem) { /* Create our event (with options) */
+                  var evt = new MouseEvent('click', { /*simulateClick compliments of Chris Ferdinandi*/
+                      bubbles: true,
+                      cancelable: true,
+                      view: window
+                  });
+                  var canceled = !elem.dispatchEvent(evt); /* If cancelled, don't dispatch our event */
+              };
+
+              var menu = document.querySelector('.menu-icon-link');
+              var body = document.querySelector('body');
+
+              simulateClick(menu);
+              expect(body.classList.contains('menu-hidden')).toBe(false); /*After first click should not be hidden*/
+
+              simulateClick(menu);
+              expect(body.classList.contains('menu-hidden')).toBe(true); /*After second click should be hidden*/
+          });
+    });
 
     /* TODO: Write a new test suite named "Initial Entries" */
+    describe('Initial Entries', function() {
 
         /* TODO: Write a test that ensures when the loadFeed
          * function is called and completes its work, there is at least
@@ -62,11 +100,38 @@ $(function() {
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
+         beforeEach(function(done){
+             loadFeed(0, function(){
+                 done();
+             });
+         });
+
+         it('should generate at least one entry within feed', function(done) {
+              var firstEntry = document.querySelector('.feed .entry'); /*selects the first entry in the feed*/
+              expect(firstEntry).not.toBe(null);
+              done();
+         });
+    });
 
     /* TODO: Write a new test suite named "New Feed Selection" */
-
+    describe('New Feed Selection', function() {
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+         var oldFeed;
+
+         beforeEach(function(done){
+             oldFeed = document.querySelector('.feed').innerHTML; //oldFeed HTML captured before loadFeed is called again
+             loadFeed(1, function() { //call loadFeed with different index, content should change
+                 done();
+             });
+         });
+
+         it('should update content whenever loadFeed is invoked', function(done) {
+              var newFeed = document.querySelector('.feed').innerHTML; //captures the HTML for the new updated feed
+              expect(oldFeed === newFeed).toBe(false); //old and new feeds should have different HTML
+              done();
+         });
+    });
 }());
