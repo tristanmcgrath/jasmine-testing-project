@@ -27,19 +27,18 @@ $(function() {
         });
 
 
-        /* TODO: Write a test that loops through each feed
+        /* TEST: Write a test that loops through each feed
          * in the allFeeds object and ensures it has a URL defined
          * and that the URL is not empty.
          */
         it('contain valid URL\'s', function() {
             for (i=0; i<allFeeds.length; i++) {
-              expect(allFeeds[i].url).toBeDefined();
-              expect(allFeeds[i].url).not.toBe('');
+              expect(allFeeds[i].url).toBeTruthy(); //tests against both undefined and empty string
             }
         });
 
 
-        /* TODO: Write a test that loops through each feed
+        /* TEST: Write a test that loops through each feed
          * in the allFeeds object and ensures it has a name defined
          * and that the name is not empty.
          */
@@ -52,10 +51,10 @@ $(function() {
     });
 
 
-    /* TODO: Write a new test suite named "The Menu" */
+    /* TEST: Write a new test suite named "The Menu" */
     describe('The Menu', function() {
 
-        /* TODO: Write a test that ensures the menu element is
+        /* TEST: Write a test that ensures the menu element is
          * hidden by default. You'll have to analyze the HTML and
          * the CSS to determine how we're performing the
          * hiding/showing of the menu element.
@@ -65,7 +64,7 @@ $(function() {
               expect(body.classList.contains('menu-hidden')).toBe(true); /*test to see if body has menu-hidden class*/
          });
 
-         /* TODO: Write a test that ensures the menu changes
+         /* TEST: Write a test that ensures the menu changes
           * visibility when the menu icon is clicked. This test
           * should have two expectations: does the menu display when
           * clicked and does it hide when clicked again.
@@ -91,10 +90,10 @@ $(function() {
           });
     });
 
-    /* TODO: Write a new test suite named "Initial Entries" */
+    /* TEST: Write a new test suite named "Initial Entries" */
     describe('Initial Entries', function() {
 
-        /* TODO: Write a test that ensures when the loadFeed
+        /* TEST: Write a test that ensures when the loadFeed
          * function is called and completes its work, there is at least
          * a single .entry element within the .feed container.
          * Remember, loadFeed() is asynchronous so this test will require
@@ -107,22 +106,23 @@ $(function() {
          });
 
          it('should generate at least one entry within feed', function(done) {
-              var firstEntry = document.querySelector('.feed .entry'); /*selects the first entry in the feed*/
-              expect(firstEntry).not.toBe(null);
+              var numEntries = document.querySelectorAll('.feed .entry').length; /*selects the first entry in the feed*/
+              expect(numEntries).toBeGreaterThan(0);
               done();
          });
     });
 
-    /* TODO: Write a new test suite named "New Feed Selection" */
+    /* TEST: Write a new test suite named "New Feed Selection" */
     describe('New Feed Selection', function() {
-        /* TODO: Write a test that ensures when a new feed is loaded
+        /* TEST: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
          var oldFeed;
 
          beforeEach(function(done){
-             oldFeed = document.querySelector('.feed').innerHTML; //oldFeed HTML captured before loadFeed is called again
+             loadFeed(0);
+             firstFeed = document.querySelector('.feed').innerHTML; //oldFeed HTML captured before loadFeed is called again
              loadFeed(1, function() { //call loadFeed with different index, content should change
                  done();
              });
@@ -130,7 +130,7 @@ $(function() {
 
          it('should update content whenever loadFeed is invoked', function(done) {
               var newFeed = document.querySelector('.feed').innerHTML; //captures the HTML for the new updated feed
-              expect(oldFeed === newFeed).toBe(false); //old and new feeds should have different HTML
+              expect(firstFeed === newFeed).toBe(false); //old and new feeds should have different HTML
               done();
          });
     });
