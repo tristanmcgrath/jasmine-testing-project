@@ -121,16 +121,17 @@ $(function() {
          var oldFeed;
 
          beforeEach(function(done){
-             loadFeed(0);
-             firstFeed = document.querySelector('.feed').innerHTML; //oldFeed HTML captured before loadFeed is called again
-             loadFeed(1, function() { //call loadFeed with different index, content should change
-                 done();
+             loadFeed(2, function() { //call loadFeed with different index, content should change
+                 oldFeed = document.querySelector('.feed').innerHTML; //oldFeed HTML captured before loadFeed is called again
+                 loadFeed(1, function() {
+                     done();
+                 });
              });
          });
 
          it('should update content whenever loadFeed is invoked', function(done) {
               var newFeed = document.querySelector('.feed').innerHTML; //captures the HTML for the new updated feed
-              expect(firstFeed === newFeed).toBe(false); //old and new feeds should have different HTML
+              expect(oldFeed).not.toBe(newFeed); //old and new feeds should have different HTML
               done();
          });
     });
